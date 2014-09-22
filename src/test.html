@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <title>Brython Crafty Test</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="content-type" content="application/xml;charset=utf-8" />
+        <link rel="shortcut icon" href="view/favicon.ico" type="image/x-icon" />
+        <script type="text/javascript" src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+        <script type="text/javascript" src="../../lib/Brython2.2/brython.js"></script>
+        <script type="text/python">
+            from crafty import main
+            main()
+
+        </script>
+    </head>
+    <body onLoad="brython(2, {static_stdlib_import: true})" class="main">
+        <div id="game"></div>
+        <!--
+        <script>
+          Crafty.init(500,350, document.getElementById('game'));
+          Crafty.e('2D, DOM, Color').attr({x: 0, y: 0, w: 100, h: 100}).color('#F00').fourway(4)
+            .gravity('Floor');
+          Crafty.e('2D, DOM, Color').attr({x: 0, y: 250, w: 250, h: 10}).color('green');
+        </script>
+        -->
+    </body>
+</html>
