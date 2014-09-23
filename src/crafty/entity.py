@@ -17,9 +17,10 @@ Entity Module
 
 """
 from .graphics import Sprite
+from .base import Base
 
 
-class Entity(Sprite):
+class Entity(Sprite, Base):
     """Creates an entity.  :ref:`entity`
 
     Any arguments will be applied in the same way .addComponent()
@@ -36,6 +37,7 @@ class Entity(Sprite):
         self.__elt = stage.e(cmp)
         #super(self, Sprite, self.__elt)
         Sprite.__init__(self, self.__elt)
+        Base.__init__(self, self.__elt)
         self.__stage = stage
 
     def attr(self, **kwarg):

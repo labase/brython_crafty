@@ -87,6 +87,26 @@ class TestCrafty(unittest.TestCase):
         assert isinstance(entity, Entity), "Not entity but %s" % type(entity)
         self.c_mock.e.assert_called_once_with('2D, DOM, Color')
 
+    def test_text(self):
+        """create text."""
+        entity = self.cft.text('2D, DOM, Color')
+        self.c_mock.text.assert_called_once_with('2D, DOM, Color')
+
+    def test_bind(self):
+        """bind function."""
+        func = lambda: None
+        bound = self.cft.bind('Click', func)
+        self.c_mock.bind.assert_called_once_with('Click', func)
+
+    def test_component(self):
+        """create component."""
+        class Comp:
+            def init(self):
+                pass
+        cmp = Comp()
+        comp = self.cft.c('acomp', cmp)
+        self.c_mock.c.assert_called_once_with('acomp', dict(init=cmp.init))
+
     def test_sprite(self):
         """create sprite."""
         from crafty.graphics import Sprite

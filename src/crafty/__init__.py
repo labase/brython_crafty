@@ -122,7 +122,7 @@ def main():
                 print("class comp test", self, ou)
         a = Cmo()
         a_ = {str(k): getattr(a, k) for k in dir(a) if '__' not in k}
-        crafty.c('clastest', a_)
+        crafty.c('clastest', a)
         crafty.e('clastest')
 
     def crafty():
@@ -145,5 +145,25 @@ def main():
         })
 
         #crafty.e('2D, DOM, Color').attr(x=0, y=0, w=100, h=100).color('#F00').fourway(4)
+    def crafty_command():
+        viewportWidth = 200
+        viewportHeight = 200
+        #Crafty.init(viewportWidth, viewportHeight)
+        crafty = Crafty(viewportWidth, viewportHeight, document['game'])
 
-    bcrafty()
+        #Crafty.canvas.init();
+
+        def iniscene(ev):
+            def clicked(e=0, f=0):
+                print(clicked, e, crafty, crafty.mousePos.x, clickText.text)
+                clickText.text("Clicked:" + crafty.mousePos.x + ", " + crafty.mousePos.y)
+            crafty.background("#ff0")
+            clickText = crafty.e("2D, DOM, Text")\
+                .attr(x=viewportWidth/4, y=180, w=150, h=40)\
+                .text("Click somewhere")
+            mouseTracker = crafty.e("2D, Mouse").attr(w=viewportWidth, h=viewportHeight, x=0, y=0)
+            mouseTracker.bind("Click", clicked)
+        crafty.scene("game", iniscene)
+        crafty.scene("game")
+
+    crafty_command()

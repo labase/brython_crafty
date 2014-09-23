@@ -16,8 +16,8 @@ Core Module
 .. moduleauthor:: Carlo Oliveira <carlo@nce.ufrj.br>
 
 """
-from .entity import Entity
 from .graphics import Sprite
+from .base import Base
 try:
     from browser import document, window
     from javascript import JSObject, JSConstructor
@@ -43,7 +43,7 @@ print(crafty.getVersion())
 '''
 
 
-class BCrafty:
+class BCrafty(Base):
     """Crafty game engine main class.  :ref:`crafty`
 
     :param w: The width of crafty window
@@ -60,15 +60,7 @@ class BCrafty:
         """
         self.__crafty = JSObject(JSCrafty)
         self.__crafty.init(w, h, stage)
-
-    def background(self, color):
-        """Change background color. :class:`crafty.core.BCrafty`
-
-        :param color: A string with components ex:'2D, DOM, Color'
-        :returns: This instance of Crafty
-        """
-        self.__crafty.background(color)
-        return self
+        Base.__init__(self, self.__crafty)
 
     def e(self, comp='2D, DOM, Color'):
         """Entity. :class:`crafty.core.BCrafty`
@@ -76,6 +68,7 @@ class BCrafty:
         :param comp: A string with components ex:'2D, DOM, Color'
         :returns: An Entity instance
         """
+        from .entity import Entity
         return Entity(self.__crafty, comp)
 
     @property
@@ -140,7 +133,7 @@ class BCrafty:
         """
         return Sprite(self.__crafty).sprite(x, y, w, h)
 
-    def c(self, name, component):
+    def c(self, name, *comp, **items):
         """Creates a component naming the ID and passing an object. :class:`crafty.core.BCrafty`
 
         A couple of methods are treated specially.
@@ -150,6 +143,8 @@ class BCrafty:
         It is passed a single boolean parameter that is true if the entity is being destroyed.
 
         :param name: Name of the component
-        :param component: Object with the component's properties and methods that will be inherited by entities.
+        :param comp: Object with the component's properties and methods that will be inherited by entities.
+        :param items: If component is not provided each keyword argument will be attached as a member of component.
         """
-        return self.__crafty.c(name, component)
+        comp = {str(k): getattr(comp[0], k) for k in dir(comp[0]) if '__' not in k} if comp else dict(**items)
+        return self.__crafty.c(name, comp)
