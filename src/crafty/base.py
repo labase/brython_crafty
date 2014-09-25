@@ -80,7 +80,8 @@ class Base:
         :param text: Name of the event to bind to
         :returns: Load a crafty scene
         """
-        return self.__crafty.text(text)
+        self.__crafty.text(text)
+        return self
 
     def bind(self, eventName, callback):
         """Crafty Bind. :class:`crafty.core.BCrafty`
