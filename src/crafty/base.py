@@ -93,3 +93,14 @@ class Base:
         :returns: callback function which can be used for unbind
         """
         return self.__crafty.bind(eventName, callback)
+
+    def onebind(self, eventName, callback):
+        """Crafty OneBind. :class:`crafty.core.BCrafty`
+
+        Binds to a global event. Method will be executed once when Crafty.trigger is used with the event name.
+
+        :param eventName: Name of the event to bind to
+        :param callback: Method to execute upon event triggered
+        :returns: callback function which can be used for unbind
+        """
+        return self.__crafty.one(eventName, callback)

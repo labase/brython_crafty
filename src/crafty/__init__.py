@@ -27,9 +27,45 @@ class Crafty(BCrafty):
     """
     pass
 
+IMG = "https://dl.dropboxusercontent.com/u/1751704/igames/img/"
+SCENES = "eicamundo.jpg Fog04.png Foghole.png"
+SPRITES = "treesprite.png fruit.png caveman.png largeemoji.png"
+
 
 def main():
     from browser import document
+
+    def ecrafty():
+        def clicked(ev=None):
+            print('clickeed', fog)
+            fog.tween(3000, alpha=0.0)
+
+        def showtrees(ev=None):
+            print('showtrees', fog)
+            for i in range(1,9):
+                crafty.e('2D, Canvas, grass%d' % i).attr(x=10 + 300*i//4, y=10 + 120*i%4, w=120, h=120)
+        crafty = Crafty(512, 512, document['game'])
+        crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
+        crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
+        crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
+        crafty.sprites(
+            120, IMG+"treesprite.png",
+            grass1=[0, 0],
+            grass2=[1, 0],
+            grass3=[2, 0],
+            grass4=[3, 0],
+            grass5=[0, 1],
+            grass6=[1, 1],
+            grass7=[2, 1],
+            grass8=[3, 1],
+        )
+        crafty.e('2D, Canvas, mundo').attr(x=0, y=0, w=512, h=512)
+        crafty.e('2D, Canvas, foghole').attr(x=0, y=0, w=512, h=512)
+        fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
+            .attr(alpha=0.95, x=0, y=0, w=512, h=512)
+        fog.onebind("Click", clicked)
+        fog.onebind("TweenEnd", showtrees)
+        #fog.tween(300, alpha=0.0)
 
     def bcrafty():
         #crafty = JSObject(Crafty)
@@ -166,4 +202,5 @@ def main():
         crafty.scene("game", iniscene)
         crafty.scene("game")
 
-    crafty_command()
+    #crafty_command()
+    ecrafty()
