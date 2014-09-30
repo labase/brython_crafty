@@ -30,20 +30,42 @@ class Crafty(BCrafty):
 IMG = "https://dl.dropboxusercontent.com/u/1751704/igames/img/"
 SCENES = "eicamundo.jpg Fog04.png Foghole.png"
 SPRITES = "treesprite.png fruit.png caveman.png largeemoji.png"
+ti = 0
+TT = []
 
 
 def main():
     from browser import document
+
+    class Tree:
+        def __init__(self, i, crafty):
+            self._t = crafty.e('2D, Canvas, grass%d' % i)\
+                .attr(x=10 + 300*i//4, y=10+120*i % 4, w=100, h=100)
+            self._t.bind("Click", self.click)
+
+        def click(self, i):
+            print('Treeclickeed', self._t)
+            self._t.tween(2000, x=100 + 25*ti//4, y=100+25*ti % 4, w=20, h=20)
 
     def ecrafty():
         def clicked(ev=None):
             print('clickeed', fog)
             fog.tween(3000, alpha=0.0)
 
+        def click(self, i):
+            global ti
+            print('Treeclickeed', self._t)
+            TT[ti].tween(2000, x=100 + 25*ti//4, y=100+25*ti % 4, w=20, h=20)
+            ti += 1
+
         def showtrees(ev=None):
             print('showtrees', fog)
-            for i in range(1,9):
-                crafty.e('2D, Canvas, grass%d' % i).attr(x=10 + 300*i//4, y=10 + 120*i%4, w=120, h=120)
+            for i in range(1, 9):
+                _t = crafty.e('2D, Canvas, grass%d' % i)\
+                    .attr(x=10 + 300*i//4, y=10+120*i % 4, w=60, h=60, _globalZ=100)
+                #Tree(i, crafty)
+                _t.onebind("Click", clicked)
+                TT[i] = _t
         crafty = Crafty(512, 512, document['game'])
         crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
         crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
@@ -59,10 +81,10 @@ def main():
             grass7=[2, 1],
             grass8=[3, 1],
         )
-        crafty.e('2D, Canvas, mundo').attr(x=0, y=0, w=512, h=512)
-        crafty.e('2D, Canvas, foghole').attr(x=0, y=0, w=512, h=512)
+        crafty.e('2D, Canvas, mundo').attr(x=0, y=0, w=512, h=512, _globalZ=10)
+        crafty.e('2D, Canvas, foghole').attr(x=0, y=0, w=512, h=512, _globalZ=20)
         fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
-            .attr(alpha=0.95, x=0, y=0, w=512, h=512)
+            .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
         fog.onebind("Click", clicked)
         fog.onebind("TweenEnd", showtrees)
         #fog.tween(300, alpha=0.0)
