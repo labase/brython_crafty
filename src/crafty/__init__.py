@@ -36,58 +36,99 @@ TT = []
 
 def main():
     from browser import document
+    from __random import randint
+
+
+    class World:
+        def __init__(self):
+            self.crafty = crafty = Crafty(512, 512, document['game'])
+            crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
+            crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
+            crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
+            crafty.sprites(
+                120, IMG+"treesprite.png",
+                grass0=[0, 0],
+                grass1=[1, 0],
+                grass2=[2, 0],
+                grass3=[3, 0],
+                grass4=[0, 1],
+                grass5=[1, 1],
+                grass6=[2, 1],
+                grass7=[3, 1],
+            )
+            fruits = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
+            print(fruits)
+            crafty.sprites(
+                65, IMG+"fruit.png",**fruits)
+            #crafty.e('2D, Canvas, Tween, fruit0').attr(x=300, y=100, w=30, h=30, _globalZ=40)
+            #crafty.e('2D, Canvas, Tween, fruit11').attr(x=300, y=200, w=30, h=30, _globalZ=40)
+
+            m = crafty.e('2D, Canvas, Tween, mundo').attr(alpha=1.0, x=0, y=0, w=512, h=512, _globalZ=10)
+            self.foh = foh = crafty.e('2D, Canvas, Tween, foghole').attr(x=0, y=0, w=512, h=512, _globalZ=20)
+            self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
+                .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
+            fog.onebind("Click", self.clicked)
+            fog.onebind("TweenEnd", self.showtrees)
+            """
+            self.fruitfall()
+            """
+
+        def clicked(self, ev=None):
+            print('clickeed')
+            self.fog.tween(3000, alpha=0.0)
+
+        def fogfade(self):
+            print('fogfade')
+            self.foh.tween(3000, alpha=0.0)
+
+        def fruitfall(self):
+            print('fruitfall')
+            #crafty.e('2D, Canvas, Tween, fruit0')
+            for fruit in range(12):
+                self.crafty.e('2D, Canvas, Tween, fruit%d' % fruit)\
+                .attr(x=280 + 20*fruit//3, y=140+20*fruit % 3, w=16, h=16, _globalZ=40)\
+                .tween(randint(100, 3000), y=140+10+20*fruit % 3 )
+
+        def showtrees(self, ev=None):
+            print('showtrees')
+            for i in range(8):
+                Tree(i, self.crafty, self)
+
 
     class Tree:
-        def __init__(self, i, crafty):
-            self._t = crafty.e('2D, Canvas, grass%d' % i)\
-                .attr(x=10 + 300*i//4, y=10+120*i % 4, w=100, h=100)
+        TI = 0
+        def __init__(self, i, crafty, world):
+            print('Treeclickeed__init__', i)
+            self.world = world
+            self.i = i
+            self._t = crafty.e('2D, Canvas, Mouse, Tween, grass%d' % i)\
+                .attr(x=10 + 300*i//4, y=10+120*i % 4, w=100, h=100, _globalZ=100)
             self._t.bind("Click", self.click)
+            self._click = self._position
 
         def click(self, i):
-            print('Treeclickeed', self._t)
-            self._t.tween(2000, x=100 + 25*ti//4, y=100+25*ti % 4, w=20, h=20)
+            self._click(i)
+
+        def _position(self, i):
+            print('Treeclickeed', Tree.TI)
+
+            ti = Tree.TI
+            dx, dy = randint(0,14), randint(0,14)
+            self._t.tween(200, x=140+dx+25*ti//3, y=180+dx+25*ti % 3, w=20, h=20)
+            Tree.TI += 1
+            self._click = self._brake
+            if Tree.TI >= 8:
+                self.world.fogfade()
+
+        def _brake(self, i):
+            print('_brake', self.i)
+            if self.i == 5:
+                self.world.fruitfall()
+
+
 
     def ecrafty():
-        def clicked(ev=None):
-            print('clickeed', fog)
-            fog.tween(3000, alpha=0.0)
-
-        def click(self, i):
-            global ti
-            print('Treeclickeed', self._t)
-            TT[ti].tween(2000, x=100 + 25*ti//4, y=100+25*ti % 4, w=20, h=20)
-            ti += 1
-
-        def showtrees(ev=None):
-            print('showtrees', fog)
-            for i in range(1, 9):
-                _t = crafty.e('2D, Canvas, grass%d' % i)\
-                    .attr(x=10 + 300*i//4, y=10+120*i % 4, w=60, h=60, _globalZ=100)
-                #Tree(i, crafty)
-                _t.onebind("Click", clicked)
-                TT[i] = _t
-        crafty = Crafty(512, 512, document['game'])
-        crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
-        crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
-        crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
-        crafty.sprites(
-            120, IMG+"treesprite.png",
-            grass1=[0, 0],
-            grass2=[1, 0],
-            grass3=[2, 0],
-            grass4=[3, 0],
-            grass5=[0, 1],
-            grass6=[1, 1],
-            grass7=[2, 1],
-            grass8=[3, 1],
-        )
-        crafty.e('2D, Canvas, mundo').attr(x=0, y=0, w=512, h=512, _globalZ=10)
-        crafty.e('2D, Canvas, foghole').attr(x=0, y=0, w=512, h=512, _globalZ=20)
-        fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
-            .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
-        fog.onebind("Click", clicked)
-        fog.onebind("TweenEnd", showtrees)
-        #fog.tween(300, alpha=0.0)
+        World()
 
     def bcrafty():
         #crafty = JSObject(Crafty)
@@ -139,7 +180,7 @@ def main():
                     .attr(x=i * 16, y=0, z=2)
                 crafty.e("2D, DOM, wall_bottom, bush%d" % crafty.randRange(1, 2))\
                     .attr(x=i * 16, y=304, z=2)
-            
+
             #create the bushes along the y-axis
             #we need to start one more and one less to not overlap the previous bushes
             for i in range(19):
