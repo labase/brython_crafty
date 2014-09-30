@@ -36,12 +36,12 @@ TT = []
 
 def main():
     from browser import document
-    from __random import randint
-
+    from __random import randint, shuffle
 
     class World:
         def __init__(self):
             self.crafty = crafty = Crafty(512, 512, document['game'])
+            crafty.sprites(600, IMG+"balooni.png", baloon=[0, 0])
             crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
             crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
             crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
@@ -57,21 +57,37 @@ def main():
                 grass7=[3, 1],
             )
             fruits = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
+            debris = {"debris%d" % fr: [7+fr//6, fr % 3] for fr in range(48)}
+            cavemn = {"caver%d" % fr: [fr % 5, fr//5] for fr in range(10)}
+            emoji = {"emoji%d" % fr: [fr % 14, fr//14] for fr in range(10)}
             print(fruits)
-            crafty.sprites(
-                65, IMG+"fruit.png",**fruits)
-            #crafty.e('2D, Canvas, Tween, fruit0').attr(x=300, y=100, w=30, h=30, _globalZ=40)
-            #crafty.e('2D, Canvas, Tween, fruit11').attr(x=300, y=200, w=30, h=30, _globalZ=40)
+            crafty.sprites(65, IMG+"fruit.png", **fruits)
+            crafty.sprites(32, IMG+"cacarecos.png", **debris)
+            crafty.sprites(125, IMG+"caveman.png", **cavemn)
+            crafty.sprites(47, IMG+"largeemoji.png", **emoji)
 
             m = crafty.e('2D, Canvas, Tween, mundo').attr(alpha=1.0, x=0, y=0, w=512, h=512, _globalZ=10)
+            ''''''
             self.foh = foh = crafty.e('2D, Canvas, Tween, foghole').attr(x=0, y=0, w=512, h=512, _globalZ=20)
+            #self.ugh = ugh = crafty.e('2D, Canvas, Tween, caver4').attr(x=200, y=180, w=20, h=20, _globalZ=18)
+            #self.agh = agh = crafty.e('2D, Canvas, Tween, caver6').attr(x=350, y=190, w=20, h=20, _globalZ=18)
+            #self.agh = agh = crafty.e('2D, Canvas, Tween, caver6').attr(x=350, y=190, w=20, h=20, _globalZ=18)
             self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
                 .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
             fog.onebind("Click", self.clicked)
             fog.onebind("TweenEnd", self.showtrees)
+            ''''''
+            self.ugh = ugh = Caveman(i=4, x=230, y=180, crafty=crafty, world=self)
+            self.agh = agh = Caveman(i=6, x=350, y=190, crafty=crafty, world=self)
             """
             self.fruitfall()
             """
+            #self.fogfade()
+
+        def talk(self, ev=None):
+            print('wo talk')
+            self.ugh.talk(None)
+            self.agh.talk(None)
 
         def clicked(self, ev=None):
             print('clickeed')
@@ -80,23 +96,59 @@ def main():
         def fogfade(self):
             print('fogfade')
             self.foh.tween(3000, alpha=0.0)
+            debris = list(range(48))
+            shuffle(debris)
+            for drs, fig in enumerate(debris[:20]):
+                Debris(drs, fig, self.crafty, self)
 
         def fruitfall(self):
             print('fruitfall')
             #crafty.e('2D, Canvas, Tween, fruit0')
             for fruit in range(12):
                 self.crafty.e('2D, Canvas, Tween, fruit%d' % fruit)\
-                .attr(x=280 + 20*fruit//3, y=140+20*fruit % 3, w=16, h=16, _globalZ=40)\
-                .tween(randint(100, 3000), y=140+10+20*fruit % 3 )
+                    .attr(x=280 + 20*fruit//3, y=140+20*fruit % 3, w=16, h=16, _globalZ=40)\
+                    .tween(randint(100, 3000), y=140+10+20*fruit % 3)
 
         def showtrees(self, ev=None):
             print('showtrees')
             for i in range(8):
                 Tree(i, self.crafty, self)
 
+    class Caveman:
+
+        def __init__(self, i, x, y, crafty, world):
+            print('Caveman __init__', i)
+            self.world = world
+            self.i = i
+            self.xy = (x, y)
+            self.crafty = crafty
+            self._t = crafty.e('2D, Canvas, Mouse, Tween, caver%d' % i)\
+                .attr(x=x, y=y, w=25, h=25, _globalZ=17)
+            self._t.bind("Click", self.click)
+            #self._position(None)
+            self._click = self.world.talk
+
+        def click(self, i):
+            print('Caveman clickeed')
+            self._click(i)
+
+        def talk(self, i):
+            print('Caveman clickeed')
+            x, y = self.xy
+            self._b = self.crafty.e('2D, Canvas, Tween, baloon')\
+                .attr(x=x-115, y=y-200, w=200, h=200, _globalZ=18)
+            for em in range(9):
+                self.crafty.e('2D, Canvas, Tween, emoji%d' % em)\
+                    .attr(x=x-90 + 55*em//3, y=y-180+40*em % 3, w=38, h=38, _globalZ=19)
+
+        def move(self, x, y, action):
+            print('Cavemanmove', x, y)
+            self._t.tween(1000, x=x, y=y)
+            self._t.onebind('TweenEnd', action)
 
     class Tree:
         TI = 0
+
         def __init__(self, i, crafty, world):
             print('Treeclickeed__init__', i)
             self.world = world
@@ -113,9 +165,10 @@ def main():
             print('Treeclickeed', Tree.TI)
 
             ti = Tree.TI
-            dx, dy = randint(0,14), randint(0,14)
+            dx, dy = randint(0, 14), randint(0, 14)
             self._t.tween(200, x=140+dx+25*ti//3, y=180+dx+25*ti % 3, w=20, h=20)
             Tree.TI += 1
+            #return
             self._click = self._brake
             if Tree.TI >= 8:
                 self.world.fogfade()
@@ -125,7 +178,34 @@ def main():
             if self.i == 5:
                 self.world.fruitfall()
 
+    class Debris:
+        TI = 0
 
+        def __init__(self, drs, fig, crafty, world):
+            print('Treeclickeed__init__', i)
+            self.world = world
+            self.i = i
+            dx, dy = randint(0, 20), randint(0, 10)
+            self._t = crafty.e('2D, Canvas, Mouse, Tween, debris%d' % fig)\
+                .attr(x=360+dx+16*drs//4, y=134+dy+16*drs % 4, w=16, h=16, _globalZ=15)
+
+            self._t.bind("Click", self.click)
+            self._click = self._position
+
+        def click(self, i):
+            self._click(i)
+
+        def _position(self, i):
+            print('Debris clickeed', Debris.TI)
+
+            ti = Debris.TI
+            dx, dy = randint(0, 5), randint(0, 5)
+            self._t.tween(200, x=280+dx+16*ti//3, y=154+dx+16*ti % 3, w=16, h=16)
+            Debris.TI += 1
+            self._click = self._brake
+
+        def _brake(self, i):
+            print('_brake', self.i)
 
     def ecrafty():
         World()
