@@ -28,8 +28,18 @@ class Crafty(BCrafty):
     pass
 
 IMG = "https://dl.dropboxusercontent.com/u/1751704/igames/img/"
+'''
 SCENES = "eicamundo.jpg Fog04.png Foghole.png"
-SPRITES = "treesprite.png fruit.png caveman.png largeemoji.png"
+SPRITES_IMAGES = "eicamundo.jpg Fog04.png Foghole.png treesprite.png fruit.png" \
+                 " cacarecos.png caveman.png largeemoji.png baloons.png"
+SPRITES_NAMES = "mundo fog foghole tree fruit debri caver emoji ballon"
+'''
+SPRITE_DIMENSIONS = dict(
+    mundo=["eicamundo", 512, 1, 1], fog=["Fog04", 512, 1, 1], foghole=["Foghole", 512, 1, 1],
+    tree=["treesprite", 120, 4, 8], fruit=["fruit", 65, 6, 12], caver=["caveman", 125, 5, 10],
+    debris=["cacarecos", 32, 12, 48], emoji=["largeemoji", 47, 14, 4*14], baloon=["baloons", 600, 2, 2])
+SPRITE_DIMENSIONS = [[key] + [value[0] + '.png']
+                     + [it for it in value[1:]] for key, value in SPRITE_DIMENSIONS.items()]
 ti = 0
 TT = []
 
@@ -40,13 +50,22 @@ def main():
 
     class World:
         def __init__(self):
+            def cut_sprites(name, image, sprite_size, columns, total_pictures):
+                spritenames = {
+                    "%s%d" % (name, index): [index % columns, index//columns]
+                    for index in range(total_pictures)}
+                print(spritenames, image, sprite_size)
+                crafty.sprites(sprite_size, IMG+image, **spritenames)
+            self.talking = True
+            self.talk = self._talk
+            print(SPRITE_DIMENSIONS)
             self.crafty = crafty = Crafty(512, 512, document['game'])
-            crafty.sprites(600, IMG+"balooni.png", baloon=[0, 0])
-            crafty.sprites(512, IMG+"eicamundo.jpg", mundo=[0, 0])
+            [cut_sprites(*args) for args in SPRITE_DIMENSIONS]
+            '''
+            #crafty.sprites(512, IMG+"eicamundo.png", mundo=[0, 0])
             crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
             crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
-            crafty.sprites(
-                120, IMG+"treesprite.png",
+            crafty.sprites(120, IMG+"treesprite.png",
                 grass0=[0, 0],
                 grass1=[1, 0],
                 grass2=[2, 0],
@@ -56,6 +75,7 @@ def main():
                 grass6=[2, 1],
                 grass7=[3, 1],
             )
+            trees = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
             fruits = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
             debris = {"debris%d" % fr: [7+fr//6, fr % 3] for fr in range(48)}
             cavemn = {"caver%d" % fr: [fr % 5, fr//5] for fr in range(10)}
@@ -65,27 +85,32 @@ def main():
             crafty.sprites(32, IMG+"cacarecos.png", **debris)
             crafty.sprites(125, IMG+"caveman.png", **cavemn)
             crafty.sprites(47, IMG+"largeemoji.png", **emoji)
+            '''
 
-            m = crafty.e('2D, Canvas, Tween, mundo').attr(alpha=1.0, x=0, y=0, w=512, h=512, _globalZ=10)
+            m = crafty.e('2D, Canvas, Tween, mundo0').attr(alpha=1.0, x=0, y=0, w=512, h=512, _globalZ=10)
             ''''''
-            self.foh = foh = crafty.e('2D, Canvas, Tween, foghole').attr(x=0, y=0, w=512, h=512, _globalZ=20)
-            #self.ugh = ugh = crafty.e('2D, Canvas, Tween, caver4').attr(x=200, y=180, w=20, h=20, _globalZ=18)
-            #self.agh = agh = crafty.e('2D, Canvas, Tween, caver6').attr(x=350, y=190, w=20, h=20, _globalZ=18)
-            #self.agh = agh = crafty.e('2D, Canvas, Tween, caver6').attr(x=350, y=190, w=20, h=20, _globalZ=18)
-            self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, fog')\
+            self.foh = foh = crafty.e('2D, Canvas, Tween, foghole0').attr(x=0, y=0, w=512, h=512, _globalZ=20)
+            self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, fog0')\
                 .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
             fog.onebind("Click", self.clicked)
             fog.onebind("TweenEnd", self.showtrees)
             ''''''
-            self.ugh = ugh = Caveman(i=4, x=230, y=180, crafty=crafty, world=self)
-            self.agh = agh = Caveman(i=6, x=350, y=190, crafty=crafty, world=self)
+            self.ugh = ugh = Caveman(i=4, x=100, y=200, crafty=crafty, world=self)
+            self.agh = agh = Caveman(i=6, x=240, y=265, crafty=crafty, world=self)
             """
             self.fruitfall()
             """
             #self.fogfade()
 
-        def talk(self, ev=None):
+        def _notalk(self, ev=None):
+            print('wo notalk')
+            self.talking = not self.talking
+            self.ugh.notalk(self.talking)
+            self.agh.notalk(self.talking)
+
+        def _talk(self, ev=None):
             print('wo talk')
+            self.talk = self._notalk
             self.ugh.talk(None)
             self.agh.talk(None)
 
@@ -103,10 +128,9 @@ def main():
 
         def fruitfall(self):
             print('fruitfall')
-            #crafty.e('2D, Canvas, Tween, fruit0')
             for fruit in range(12):
                 self.crafty.e('2D, Canvas, Tween, fruit%d' % fruit)\
-                    .attr(x=280 + 20*fruit//3, y=140+20*fruit % 3, w=16, h=16, _globalZ=40)\
+                    .attr(x=280 + 20*fruit//3, y=140+20*fruit % 3, w=16, h=16, _globalZ=14)\
                     .tween(randint(100, 3000), y=140+10+20*fruit % 3)
 
         def showtrees(self, ev=None):
@@ -126,21 +150,29 @@ def main():
             self._t = crafty.e('2D, Canvas, Mouse, Tween, caver%d' % i)\
                 .attr(x=x, y=y, w=25, h=25, _globalZ=17)
             self._t.bind("Click", self.click)
-            #self._position(None)
-            self._click = self.world.talk
+            self._talking = []
 
         def click(self, i):
             print('Caveman clickeed')
-            self._click(i)
+            self.world.talk(i)
+
+        def notalk(self, talking=False):
+            print('Caveman no_talk')
+            self._b.visible = talking
+            for lang in self._talking:
+                lang.visible = talking
 
         def talk(self, i):
             print('Caveman clickeed')
             x, y = self.xy
-            self._b = self.crafty.e('2D, Canvas, Tween, baloon')\
-                .attr(x=x-115, y=y-200, w=200, h=200, _globalZ=18)
-            for em in range(9):
-                self.crafty.e('2D, Canvas, Tween, emoji%d' % em)\
-                    .attr(x=x-90 + 55*em//3, y=y-180+40*em % 3, w=38, h=38, _globalZ=19)
+            WR_OFF, WR_SZ = (self.i//5*130), (self.i//5*30)
+            self._b = self.crafty.e('2D, Canvas, Tween, baloon%d' % (self.i//5))\
+                .attr(x=x-100+WR_OFF, y=y-200, w=200+WR_SZ, h=200, _globalZ=18)
+            self._talking = [
+                self.crafty.e('2D, Canvas, Tween, emoji%d' % em)
+                    .attr(x=x-75+WR_OFF + 55*em//3, y=y-180+40*em % 3+WR_SZ//2, w=38, h=38, _globalZ=19)
+                for em in range(9)
+            ]
 
         def move(self, x, y, action):
             print('Cavemanmove', x, y)
@@ -154,7 +186,7 @@ def main():
             print('Treeclickeed__init__', i)
             self.world = world
             self.i = i
-            self._t = crafty.e('2D, Canvas, Mouse, Tween, grass%d' % i)\
+            self._t = crafty.e('2D, Canvas, Mouse, Tween, tree%d' % i)\
                 .attr(x=10 + 300*i//4, y=10+120*i % 4, w=100, h=100, _globalZ=100)
             self._t.bind("Click", self.click)
             self._click = self._position
@@ -169,7 +201,6 @@ def main():
             dx, dy = randint(0, 14), randint(0, 14)
             self._t.tween(200, x=140+dx+25*ti//3, y=180+dx+25*ti % 3, w=20, h=20)
             Tree.TI += 1
-            #return
             self._click = self._brake
             if Tree.TI >= 8:
                 self.world.fogfade()

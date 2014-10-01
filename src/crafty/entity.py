@@ -40,14 +40,13 @@ class Entity(Sprite, Base):
         Sprite.__init__(self, self.__elt)
         Base.__init__(self, self.__elt)
 
-    def _attr(self, **kwarg):
-        """Set attributes.  :mod:`crafty.entity`
+    def attach(self, entity):
+        """Attach an entity to this one.  :mod:`crafty.entity`
 
-        :param: kwargs: keyword parameters with name and values of arguments to be changed
+        :param: entity: The entity to be attached
         :returns: Self, this same entity
         """
-        #print(kwarg)
-        self.__elt.attr(dict(**kwarg))
+        self.__elt.attach(entity)
         return self
 
     def color(self, col):
@@ -93,16 +92,14 @@ class Entity(Sprite, Base):
         self.__elt.reel(reelId,  duration, fromX, fromY, frameCount)
         return self
 
-    def _animate(self, reelId=None, loopCount=1):
-        """Animate Entity.
+    @property
+    def visible(self, set_visibility):
+        return None
 
-        :param reelId: String reel identification
-        :param loopCount:  Integer number of loops, default 1, indefinite if -1
-        :returns: Self, this same entity
+    @visible.setter
+    def visible(self, set_visibility):
+        """Change Entity Visibility.
+
+        :param set_visibility: String reel identification
         """
-        self.__elt.requires('SpriteAnimation')
-        if reelId:
-            self.__elt.animate(reelId,  loopCount)
-        else:
-            self.__elt.animate(loopCount)
-        return self
+        self.__elt.visible = set_visibility
