@@ -120,6 +120,7 @@ def main():
             print('Caveman __init__', i)
             self.world = world
             self.i = i
+            self._b = None
             self.xy = (x, y)
             self.crafty = crafty
             self._t = crafty.e('2D, Canvas, Mouse, Tween, caver%d' % i)\
@@ -300,7 +301,6 @@ def main():
             def init(self, ou=None):
                 print("class comp test", self, ou)
         a = Cmo()
-        a_ = {str(k): getattr(a, k) for k in dir(a) if '__' not in k}
         crafty.c('clastest', a)
         crafty.e('clastest')
 
@@ -333,14 +333,19 @@ def main():
         #Crafty.canvas.init();
 
         def iniscene(ev):
-            def clicked(e=0, f=0):
-                print(clicked, e, crafty, crafty.mousePos.x, clickText.text)
-                clickText.text("Clicked:" + crafty.mousePos.x + ", " + crafty.mousePos.y)
             crafty.background("#ff0")
             clickText = crafty.e("2D, DOM, Text")\
-                .attr(x=viewportWidth/4, y=180, w=150, h=40)\
-                .text("Click somewhere")
-            mouseTracker = crafty.e("2D, Mouse").attr(w=viewportWidth, h=viewportHeight, x=0, y=0)
+                .attr(x=viewportWidth/4, y=180, w=150, h=40, alpha=0.0)\
+                .text("Click somewhere")\
+                .tween(3000, alpha=1.0).bind("TweenEnd", lambda x: clickText.attr(alpha=1.0))
+
+            def clicked(e=0, f=0):
+                print(clicked, e, crafty, crafty.mousePos.x, clickText, clickText.text)
+                clickText.background("#0ff").text("Click elsewhere")
+                #clickText.text("Click elsewhere")
+                #clickText.text("Clicked:" + crafty.mousePos.x + ", " + crafty.mousePos.y)
+          #clickText.text("Click elsewhere")
+            mouseTracker = crafty.e("2D, Mouse").attr(w=viewportWidth, h=viewportHeight, x=0, y=0, alpha=0.0)
             mouseTracker.bind("Click", clicked)
         crafty.scene("game", iniscene)
         crafty.scene("game")

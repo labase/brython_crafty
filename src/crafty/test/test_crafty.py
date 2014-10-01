@@ -17,7 +17,6 @@ __author__ = 'carlo'
 import unittest
 import json
 from unittest.mock import MagicMock, Mock, ANY, patch
-
 '''
 # Store original __import__
 orig_import = __import__
@@ -65,8 +64,6 @@ class TestCrafty(unittest.TestCase):
         self.module_patcher.start()
         from crafty import Crafty
         self.cft = Crafty()
-        from crafty.entity import Entity
-        self.ent = Entity
 
     def tearDown(self):
         """Remove patches.
@@ -94,8 +91,6 @@ class TestCrafty(unittest.TestCase):
         """create text."""
         entity = self.cft.text('2D, DOM, Color')
         self.c_mock.text.assert_called_once_with('2D, DOM, Color')
-        assert isinstance(entity, self.ent), "Not entity but %s" % type(entity)
-        assert entity is self.cft, "Not entity but %s" % type(entity)
 
     def test_bind(self):
         """bind function."""

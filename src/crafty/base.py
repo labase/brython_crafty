@@ -34,8 +34,18 @@ class Base:
         """
         self.__crafty = crafty
 
+    def attr(self, **kwarg):
+        """Set attributes.  :mod:`crafty.entity`
+
+        :param: kwargs: keyword parameters with name and values of arguments to be changed
+        :returns: Self, this same entity
+        """
+        #print(kwarg)
+        self.__elt.attr(dict(**kwarg))
+        return self
+
     def background(self, color):
-        """Change background color. :class:`crafty.core.BCrafty`
+        """Change background color. :class:`crafty.base.Base`
 
         :param color: A string with components ex:'2D, DOM, Color'
         :returns: This instance of Crafty
@@ -45,20 +55,29 @@ class Base:
 
     @property
     def mousePos(self):
-        """Mouse Positiom. :class:`crafty.core.BCrafty`
+        """Mouse Positiom. :class:`crafty.base.Base`
 
         """
         return self.__crafty.mousePos
 
+    @property
+    def keys(self):
+        """Keycodes. :class:`crafty.base.Base`
+
+        exemple keys.RA keys.LA keys.UA keys. DA
+
+        """
+        return self.__crafty.keys
+
     def crafty(self):
-        """Crafty js core. :class:`crafty.core.BCrafty`
+        """Crafty js core. :class:`crafty.base.Base`
 
         :returns: A javascript crafty instance
         """
         return self.__crafty
 
-    def text(self, text):
-        """Crafty Text. :class:`crafty.core.BCrafty`
+    def text(self, texty):
+        """Crafty Text. :class:`crafty.base.Base`
 
         String of text that will be inserted into the DOM or Canvas element.
 
@@ -80,11 +99,13 @@ class Base:
         :param text: Name of the event to bind to
         :returns: Load a crafty scene
         """
-        self.__crafty.text(text)
+        print('Crafty Text. Text')
+        self.__crafty.requires('Text')
+        self.__crafty.text(texty)
         return self
 
     def bind(self, eventName, callback):
-        """Crafty Bind. :class:`crafty.core.BCrafty`
+        """Crafty Bind. :class:`crafty.base.Base`
 
         Binds to a global event. Method will be executed when Crafty.trigger is used with the event name.
 

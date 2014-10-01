@@ -35,12 +35,12 @@ class Entity(Sprite, Base):
     """
     def __init__(self, stage, cmp):
         self.__elt = stage.e(cmp)
+        self.__stage = stage
         #super(self, Sprite, self.__elt)
         Sprite.__init__(self, self.__elt)
         Base.__init__(self, self.__elt)
-        self.__stage = stage
 
-    def attr(self, **kwarg):
+    def _attr(self, **kwarg):
         """Set attributes.  :mod:`crafty.entity`
 
         :param: kwargs: keyword parameters with name and values of arguments to be changed
