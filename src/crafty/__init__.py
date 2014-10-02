@@ -9,7 +9,7 @@ Brython Crafty - INIT
 :Contact: carlo@nce.ufrj.br
 :Date: 2014/09/17
 :Status: This is a "work in progress"
-:Revision: 0.1.0
+:Revision: 0.2.1
 :Home: `Labase <http://labase.selfip.org/>`__
 :Copyright: 2013, `GPL <http://is.gd/3Udt>`__.
 
@@ -18,6 +18,7 @@ Brython Crafty - INIT
 .. _mod_crafty
 
 """
+__version__ = "0.2.1"
 from .core import BCrafty
 
 
@@ -28,24 +29,16 @@ class Crafty(BCrafty):
     pass
 
 IMG = "https://dl.dropboxusercontent.com/u/1751704/igames/img/"
-'''
-SCENES = "eicamundo.jpg Fog04.png Foghole.png"
-SPRITES_IMAGES = "eicamundo.jpg Fog04.png Foghole.png treesprite.png fruit.png" \
-                 " cacarecos.png caveman.png largeemoji.png baloons.png"
-SPRITES_NAMES = "mundo fog foghole tree fruit debri caver emoji ballon"
-'''
 SPRITE_DIMENSIONS = dict(
     mundo=["eicamundo", 512, 1, 1], fog=["Fog04", 512, 1, 1], foghole=["Foghole", 512, 1, 1],
     tree=["treesprite", 120, 4, 8], fruit=["fruit", 65, 6, 12], caver=["caveman", 125, 5, 10],
     debris=["cacarecos", 32, 12, 48], emoji=["largeemoji", 47, 14, 4*14], baloon=["baloons", 600, 2, 2])
 SPRITE_DIMENSIONS = [[key] + [value[0] + '.png']
                      + [it for it in value[1:]] for key, value in SPRITE_DIMENSIONS.items()]
-ti = 0
-TT = []
 
 
 def main():
-    from browser import document
+    from browser import document, html
     from __random import randint, shuffle
 
     class World:
@@ -58,40 +51,17 @@ def main():
                 crafty.sprites(sprite_size, IMG+image, **spritenames)
             self.talking = True
             self.talk = self._talk
+            self.doc = document['game']
             print(SPRITE_DIMENSIONS)
-            self.crafty = crafty = Crafty(512, 512, document['game'])
+            self.crafty = crafty = Crafty(512, 512, self.doc)
             [cut_sprites(*args) for args in SPRITE_DIMENSIONS]
-            '''
-            #crafty.sprites(512, IMG+"eicamundo.png", mundo=[0, 0])
-            crafty.sprites(512, IMG+"Fog04.png", fog=[0, 0])
-            crafty.sprites(512, IMG+"Foghole.png", foghole=[0, 0])
-            crafty.sprites(120, IMG+"treesprite.png",
-                grass0=[0, 0],
-                grass1=[1, 0],
-                grass2=[2, 0],
-                grass3=[3, 0],
-                grass4=[0, 1],
-                grass5=[1, 1],
-                grass6=[2, 1],
-                grass7=[3, 1],
-            )
-            trees = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
-            fruits = {"fruit%d" % fr: [fr//3, fr % 3] for fr in range(12)}
-            debris = {"debris%d" % fr: [7+fr//6, fr % 3] for fr in range(48)}
-            cavemn = {"caver%d" % fr: [fr % 5, fr//5] for fr in range(10)}
-            emoji = {"emoji%d" % fr: [fr % 14, fr//14] for fr in range(10)}
-            print(fruits)
-            crafty.sprites(65, IMG+"fruit.png", **fruits)
-            crafty.sprites(32, IMG+"cacarecos.png", **debris)
-            crafty.sprites(125, IMG+"caveman.png", **cavemn)
-            crafty.sprites(47, IMG+"largeemoji.png", **emoji)
-            '''
-
             m = crafty.e('2D, Canvas, Tween, mundo0').attr(alpha=1.0, x=0, y=0, w=512, h=512, _globalZ=10)
             ''''''
             self.foh = foh = crafty.e('2D, Canvas, Tween, foghole0').attr(x=0, y=0, w=512, h=512, _globalZ=20)
-            self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, fog0')\
+            self.fog = fog = crafty.e('2D, Canvas, Mouse, Tween, Text, fog0')\
                 .attr(alpha=0.95, x=0, y=0, w=512, h=512, _globalZ=30)
+            self.ver = crafty.e('2D, Canvas, Tween, Text')\
+                .attr(alpha=1.0, x=400, y=2, w=100, h=50, _globalZ=50).text("Version %s" % __version__)
             fog.onebind("Click", self.clicked)
             fog.onebind("TweenEnd", self.showtrees)
             ''''''
@@ -137,6 +107,11 @@ def main():
             print('showtrees')
             for i in range(8):
                 Tree(i, self.crafty, self)
+
+        def matchdebris(self, debris):
+            print('matchdebris')
+            if Debris.TI < 12:
+                debris.position(None)
 
     class Caveman:
 
@@ -209,6 +184,7 @@ def main():
             print('_brake', self.i)
             if self.i == 5:
                 self.world.fruitfall()
+                self._click = lambda ev=0: None
 
     class Debris:
         TI = 0
@@ -222,22 +198,17 @@ def main():
                 .attr(x=360+dx+16*drs//4, y=134+dy+16*drs % 4, w=16, h=16, _globalZ=15)
 
             self._t.bind("Click", self.click)
-            self._click = self._position
 
         def click(self, i):
-            self._click(i)
+            self.world.matchdebris(self)
 
-        def _position(self, i):
+        def position(self, i):
             print('Debris clickeed', Debris.TI)
 
             ti = Debris.TI
             dx, dy = randint(0, 5), randint(0, 5)
             self._t.tween(200, x=280+dx+16*ti//3, y=154+dx+16*ti % 3, w=16, h=16)
             Debris.TI += 1
-            self._click = self._brake
-
-        def _brake(self, i):
-            print('_brake', self.i)
 
     def ecrafty():
         World()
