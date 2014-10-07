@@ -89,15 +89,23 @@ class Entity(Sprite, Base):
         self.__elt.gravity(elt)
         return self
 
+    @property
+    def rotation(self):
+        """Rotate entity.  :mod:`crafty.entity`
+
+        :returns: Ammount of rotation
+        """
+        self.__elt.requires('2D')
+        return self.__elt.rotation
+
+    @rotation.setter
     def rotation(self, value):
         """Rotate entity.  :mod:`crafty.entity`
 
         :param: value: Ammount of rotation
-        :returns: Self, this same entity
         """
-        self.__elt.requires('Gravity')
-        self.__elt.gravity(elt)
-        return self
+        self.__elt.requires('2D')
+        self.__elt.rotation = value
 
     def origin(self, value):
         """Set rotation origin for entity.  :mod:`crafty.entity`
@@ -105,8 +113,8 @@ class Entity(Sprite, Base):
         :param: value: lef, top, right, bottom, center, middle
         :returns: Self, this same entity
         """
-        self.__elt.requires('Gravity')
-        self.__elt.gravity(elt)
+        self.__elt.requires('2D')
+        self.__elt.origin(value)
         return self
 
     def _reel(self, reelId, duration, fromX, fromY, frameCount):
