@@ -132,3 +132,23 @@ Component for using tiles in a sprite map.
 .. note::
    Composite Unit.
 
+Draggable
+=========
+
+Enable drag and drop of the entity.
+
+**Events**
+
+*Dragging* [Data: MouseEvent]
+    is triggered each frame the entity is being dragged
+*StartDrag* [Data: MouseEvent]
+    is triggered when dragging begins
+*StopDrag* [Data: MouseEvent]
+    is triggered when dragging ends
+
+.. seealso::
+
+   Class :class:`crafty.graphics.Draggable`
+
+.. note::
+   Interface Unit.
