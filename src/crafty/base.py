@@ -54,8 +54,22 @@ class Base:
         return self
 
     @property
+    def x(self):
+        """The x position on the stage. :class:`crafty.base.Base`
+
+        """
+        return self.__crafty.x
+
+    @property
+    def y(self):
+        """The y position on the stage. :class:`crafty.base.Base`
+
+        """
+        return self.__crafty.y
+
+    @property
     def mousePos(self):
-        """Mouse Positiom. :class:`crafty.base.Base`
+        """Mouse Position. :class:`crafty.base.Base`
 
         """
         return self.__crafty.mousePos
@@ -68,6 +82,21 @@ class Base:
 
         """
         return self.__crafty.keys
+
+    def isDown(self, keyName):
+        """Determine if a certain key is currently down. :class:`crafty.base.Base`
+
+        **Example**
+
+        .. code-block:: python
+
+            entity.requires('Keyboard').bind('KeyDown', haldle_keydown)
+
+        Determine if a certain key is currently down.
+        :param keyName: Name or Code of the key to check. See Crafty.keys.
+        :returns: If the key is Down.
+        """
+        return self.__crafty.isDown(keyName)
 
     def crafty(self):
         """Crafty js core. :class:`crafty.base.Base`

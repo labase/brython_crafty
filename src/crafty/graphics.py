@@ -175,3 +175,51 @@ class Sprite:
         """
         self.__ent.requires('Tween')
         self.__ent.tween(dict(**properties), duration)
+
+
+class Draggable:
+    """Enable drag and drop of the entity.  :ref:`draggable`
+
+    """
+    def __init__(self, ent):
+        self.__ent = ent
+
+    def dragDirection(self, degrees=None, x=None, y=None):
+        """Specify the dragging direction.
+
+        if no parameters are given, remove dragging.
+
+        :param degrees: A number, the degree (clockwise) of the move direction with respect to the x axis.
+        :param x: the vector (valx, valy) denotes the move direction.
+        :param y: the vector (valx, valy) denotes the move direction.
+        """
+        if not degrees is None:
+            self.__ent.dragDirection(degrees)
+        elif not x is None:
+            self.__ent.dragDirection(dict(x=x, y=y))
+        else:
+            self.__ent.dragDirection()
+
+    def startDrag(self):
+        """Make the entity follow the mouse positions.
+
+        """
+        self.__ent.startDrag()
+
+    def stopDrag(self):
+        """Stop the entity from dragging. Essentially reproducing the drop.
+
+        """
+        self.__ent.stopDrag()
+
+    def enableDrag(self):
+        """Rebind the mouse events. Use if .disableDrag has been called.
+
+        """
+        self.__ent.enableDrag()
+
+    def disableDrag(self):
+        """Stops entity from being draggable. Reenable with .enableDrag().
+
+        """
+        self.__ent.disableDrag()

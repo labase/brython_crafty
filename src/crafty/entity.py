@@ -16,11 +16,11 @@ Entity Module
 .. moduleauthor:: Carlo Oliveira <carlo@nce.ufrj.br>
 
 """
-from .graphics import Sprite
+from .graphics import Sprite, Draggable
 from .base import Base
 
 
-class Entity(Sprite, Base):
+class Entity(Sprite, Draggable, Base):
     """Creates an entity.  :ref:`entity`
 
     Any arguments will be applied in the same way .addComponent()
