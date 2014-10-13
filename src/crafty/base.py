@@ -33,6 +33,7 @@ class Base:
         :returns: An instance of Crafty
         """
         self.__crafty = crafty
+        #crafty.attr(self=self)
 
     def attr(self, **kwarg):
         """Set attributes.  :mod:`crafty.entity`
@@ -154,3 +155,22 @@ class Base:
         :returns: callback function which can be used for unbind
         """
         return self.__crafty.one(eventName, callback)
+
+    def unbind(self, eventName, callback):
+        """Crafty unbind. :class:`crafty.core.BCrafty`
+
+        Binds to a global event. Method will be executed once when Crafty.trigger is used with the event name.
+
+        :param eventName: Name of the event to unbind to
+        :param callback: Method to unbind
+        :returns: True or false depending on if a callback was unbound
+        """
+        return self.__crafty.unbind(eventName, callback)
+
+    def destroy(self):
+        """Destroy the Entity. :class:`crafty.core.BCrafty`
+        Will remove all event listeners and delete all properties as well as removing from the stage
+
+        :returns: The object destroyied
+        """
+        return self.__crafty.destroy()

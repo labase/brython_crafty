@@ -21,7 +21,7 @@ from .base import Base
 try:
     from browser import document, window
     from javascript import JSObject, JSConstructor
-    from jscrafty import JSCrafty
+    from .jscrafty import JSCrafty
     from __random import randint
 except ImportError as ie:
     try:
