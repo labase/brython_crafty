@@ -17,4 +17,21 @@ Patchable javascript references
 .. moduleauthor:: Carlo Oliveira <carlo@nce.ufrj.br>
 
 """
-JSCrafty = Crafty
+try:
+    from browser import document
+    import urllib.request
+
+    def create_script_tag(src):
+        _fp, _, _ = urllib.request.urlopen(src)
+        _data = _fp.read()
+
+        _tag = document.createElement('script')
+        _tag.type = "text/javascript"
+        _tag.text = _data
+        #_tag.src=src
+        document.get(tag='head')[0].appendChild(_tag)
+
+    create_script_tag('/js/crafty-min.js')
+    JSCrafty = Crafty
+except Exception as ne:
+    print("Crafty JS module could not be loaded")
