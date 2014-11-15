@@ -50,6 +50,15 @@ class Entity(Sprite, Draggable, Base):
         self.__elt.attach(entity.entity)
         return self
 
+    def detach(self, entity=None):
+        """Detach an entity from this one.  :mod:`crafty.entity`
+
+        :param: entity: The entity to be detached, all entities if blank
+        :returns: Self, this same entity
+        """
+        self.__elt.detach(entity.entity) if entity else self.__elt.detach()
+        return self
+
     def color(self, col):
         """Creates an entity.  :mod:`crafty.entity`
 
@@ -94,7 +103,7 @@ class Entity(Sprite, Draggable, Base):
     def rotation(self):
         """Rotate entity.  :mod:`crafty.entity`
 
-        :returns: Ammount of rotation
+        :returns: Ammount of rotation in degrees
         """
         self.__elt.requires('2D')
         return self.__elt.rotation
@@ -103,7 +112,7 @@ class Entity(Sprite, Draggable, Base):
     def rotation(self, value):
         """Rotate entity.  :mod:`crafty.entity`
 
-        :param: value: Ammount of rotation
+        :param: value: Ammount of rotation in degrees
         """
         self.__elt.requires('2D')
         self.__elt.rotation = value
@@ -119,7 +128,7 @@ class Entity(Sprite, Draggable, Base):
         return self
 
     def _reel(self, reelId, duration, fromX, fromY, frameCount):
-        """Create animation reel.
+        """Create animation reel.  :mod:`crafty.entity`
 
         :param: reelId: String name for this reel
         :param: duration: Duration time in miliseconds for this reel
@@ -133,31 +142,70 @@ class Entity(Sprite, Draggable, Base):
         return self
 
     @property
+    def alpha(self):
+        """Return Entity Transparency.  :mod:`crafty.entity`
+        """
+        return self.__elt.alpha
+
+    @alpha.setter
+    def alpha(self, set_alpha):
+        """Change Entity Transparency.  :mod:`crafty.entity`
+
+        :param set_alpha: Float 0 - tranparent; 1 - opaque
+        """
+        self.__elt.alpha = set_alpha
+
+    @property
     def visible(self):
-        return None
+        """Return Entity Visibility.  :mod:`crafty.entity`
+        """
+        return self.__elt.visible
 
     @visible.setter
     def visible(self, set_visibility):
-        """Change Entity Visibility.
+        """Change Entity Visibility.  :mod:`crafty.entity`
 
-        :param set_visibility: String reel identification
+        :param set_visibility: Boolean set visibility
         """
         self.__elt.visible = set_visibility
 
     @property
     def entity(self):
-        """Entity property.
+        """Entity property.  :mod:`crafty.entity`
 
         """
         return self.__elt
 
     @entity.setter
     def entity(self, _):
-        """Entity property is read only.
+        """Entity property is read only.  :mod:`crafty.entity`
 
         :param _: Ignored
         """
         pass
+
+    def move(self, direction, by=1):
+        """Quick method to move the entity  by an amount of pixels.  :mod:`crafty.entity`
+        in a direction (n, s, e, w, ne, nw, se, sw).
+
+        :param direction: Direction to move (n,s,e,w,ne,nw,se,sw)
+        :param by: Amount to move in the specified direction
+        :return: Self, this same entity
+        """
+        self.__elt.move(direction, by)
+        return self
+
+    def shift(self, x=0, y=0, w=0, h=0):
+        """Shift or move the entity by an amount. Use negative values for an opposite direction.  :mod:`crafty.entity`
+
+        :param x:  Amount to move X
+        :param y: Amount to move Y
+        :param w: Amount to widen
+        :param h: Amount to increase height
+        :return: Self, this same entity
+        """
+        self.__elt.shift(x, y, w, h)
+        return self
 
     def hit(self, component):
         """Takes an argument for a component to test collision for.  :mod:`crafty.entity`
