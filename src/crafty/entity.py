@@ -68,6 +68,27 @@ class Entity(Sprite, Draggable, Base):
         self.__elt.color(col)
         return self
 
+    def twoway(self, speed, jump=None):
+        """Creates an two way entity control.  :mod:`crafty.entity`
+        Constructor to initialize the speed and power of jump.
+        Component will listen for key events and move the entity appropriately.
+        This includes Up Arrow, Right Arrow, Left Arrow as well as W, A, D.
+        Used with the gravity component to simulate jumping.
+
+        The key presses will move the entity in that direction by the speed passed in the argument.
+        Pressing the Up Arrow or W will cause the entity to jump.
+
+        :param: speed: the speed of movement
+        :param: jump: the speed of jump
+        :returns: Self, this same entity
+        """
+        self.__elt.requires('Twoway')
+        if jump is None:
+            self.__elt.twoway(speed)
+        else:
+            self.__elt.twoway(speed, jump)
+        return self
+
     def fourway(self, speed):
         """Creates an four way entity control.  :mod:`crafty.entity`
 
@@ -97,6 +118,25 @@ class Entity(Sprite, Draggable, Base):
         """
         self.__elt.requires('Gravity')
         self.__elt.gravity(entity)
+        return self
+
+    def antigravity(self):
+        """Anulates gravity to entity.  :mod:`crafty.entity`
+
+        :returns: Self, this same entity
+        """
+        self.__elt.requires('Gravity')
+        self.__elt.antigravity()
+        return self
+
+    def gravityConst(self, g):
+        """Set gravity to constant g.  :mod:`crafty.entity`
+
+        :param: g: The gravity constant
+        :returns: Self, this same entity
+        """
+        self.__elt.requires('Gravity')
+        self.__elt.gravityConst(g)
         return self
 
     @property
@@ -295,7 +335,9 @@ class Entity(Sprite, Draggable, Base):
 
         Note: Default repeat is no-repeat which is different to standard DOM (which is repeat)
 
-        If the width and height are 0 and repeat is set to no-repeat the width and height will automatically assume that of the image. This is an easy way to create an image without needing sprites.
+        If the width and height are 0 and repeat is set to no-repeat the width and height will
+        automatically assume that of the image. This is an easy way to create an image without needing sprites.
+
         **Example**
 
         Will default to no-repeat. Entity width and height will be set to the images width and height
@@ -348,4 +390,3 @@ class Entity(Sprite, Draggable, Base):
         self.__elt.requires('Tint')
         self.__elt.tint(color, strength)
         return self
-

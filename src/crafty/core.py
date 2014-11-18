@@ -116,11 +116,31 @@ class BCrafty(Base):
         :param url: URL of the sprite image
         :param map: Object where the key is what becomes a new component
          and the value points to a position on the sprite map
+        """
+        return self.__crafty.sprite(tile, url, dict(**mapper))
+
+    def spritem(self, tile, tileh, url, paddingX=0, paddingY=0, paddingAroundBorder=False, **mapper):
+        """Collection of sprites. :class:`crafty.core.BCrafty`
+        Generates components based on positions in a sprite image to be applied to entities.
+
+        Accepts a tile size, URL and map for the name of the sprite and its position.
+
+        The position must be an array containing the position of the sprite where index 0 is the x position,
+        1 is the y position and optionally 2 is the width and 3 is the height. If the sprite map has padding,
+        pass the values for the x padding or y padding. If they are the same, just add one value.
+
+        If the sprite image has no consistent tile size, 1 or no argument need be passed for tile size.
+
+        :param tile: Tile size of the sprite map, defaults to 1
+        :param url: URL of the sprite image
+        :param map: Object where the key is what becomes a new component
+         and the value points to a position on the sprite map
         :param paddingX: Horizontal space in between tiles. Defaults to 0.
         :param paddingY: Vertical space in between tiles. Defaults to paddingX.
         :param paddingAroundBorder: If padding should be applied around the border of the sprite sheet.
-         If enabled the first tile starts at (paddingX,paddingY) instead of (0,0). Defaults to false.        """
-        return self.__crafty.sprite(tile, url, dict(**mapper))
+         If enabled the first tile starts at (paddingX,paddingY) instead of (0,0). Defaults to false.
+        """
+        return self.__crafty.sprite(tile, tileh, url, dict(**mapper), paddingX, paddingY, paddingAroundBorder)
 
     def sprite(self, x, y, w, h):
         """Create a Sprite. :class:`crafty.core.BCrafty`
