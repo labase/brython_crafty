@@ -17,23 +17,6 @@ __author__ = 'carlo'
 import unittest
 import json
 from unittest.mock import MagicMock, Mock, ANY, patch
-'''
-# Store original __import__
-orig_import = __import__
-# This will be the B module
-b_mock = MagicMock()
-
-
-def import_mock(name, *args):
-    print(args)
-    if name == 'browser':
-        return b_mock
-    return orig_import(name, *args)
-
-with patch('__builtins__.__import__', side_effect=import_mock):
-    import crafty
-
-'''
 
 
 class TestCrafty(unittest.TestCase):
@@ -49,9 +32,10 @@ class TestCrafty(unittest.TestCase):
         self.b_mock = MagicMock(name="brython")
         self.c_mock = MagicMock(name="javascrip_crafty")
         self.b_mock.JSObject = MagicMock(name="jsobject", side_effect=return_javascript_module_crafty)
+        self.b_mock.JSCrafty = MagicMock(name="jscrafty", side_effect=return_javascript_module_crafty)
         modules = {
-            'jscrafty': self.b_mock,
-            'jscrafty.JSCrafty': self.b_mock.JSCrafty,
+            'crafty.jscrafty': self.b_mock,
+            'crafty.jscrafty.JSCrafty': self.b_mock.JSCrafty,
             '__random': self.b_mock,
             'browser': self.b_mock,
             'browser.document': self.b_mock,
@@ -73,7 +57,6 @@ class TestCrafty(unittest.TestCase):
     def test_init(self):
         """initial creation."""
         self.b_mock.JSObject.assert_called_once_with(self.b_mock.JSCrafty)
-        #self.b_mock.JSObject.assert_called_once_with(self.jsc_mock)
 
     def test_background(self):
         """change background."""
