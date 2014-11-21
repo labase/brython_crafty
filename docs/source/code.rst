@@ -4,6 +4,17 @@
 Brython Crafty - API
 ####################
 
+Base API
+========
+
+
+.. automodule:: crafty.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :platform: Web
+    :synopsis: Base Crafty Module.
+
 Core API
 ========
 

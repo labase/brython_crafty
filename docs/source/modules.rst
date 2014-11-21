@@ -14,7 +14,7 @@ Core Module Description
 .. _crafty:
 
 Crafty
-====================
+======
 
 Set of methods added to every single entity.
 
@@ -24,6 +24,48 @@ Set of methods added to every single entity.
 
 .. note::
    Main API Unit.
+
+.. _mod_base:
+
+#######################
+Base Module Description
+#######################
+
+.. seealso::
+
+   Module :mod:`crafty`
+
+.. note::
+   Aggregates factory, control and interface units in this single module
+
+.. _base:
+
+Base
+====
+
+Set of methods added to Crafty class.
+
+.. seealso::
+
+   Class :class:`crafty.base.Base`
+
+.. note::
+   Main Base API Unit.
+
+
+.. _viewport:
+
+ViewPort
+========
+
+Manages Camera at 2D games.
+
+.. seealso::
+
+   Class :class:`crafty.base.ViewPort`
+
+.. note::
+   Aggregates viewport facilities to Crafty class.
 
 .. _mod_entity:
 
