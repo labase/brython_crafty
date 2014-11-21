@@ -18,6 +18,7 @@ Core Module
 """
 from .graphics import Sprite
 from .base import Base
+from .base import ViewPort
 try:
     from browser import document, window
     from javascript import JSObject, JSConstructor
@@ -43,7 +44,7 @@ print(crafty.getVersion())
 '''
 
 
-class BCrafty(Base):
+class BCrafty(Base, ViewPort):
     """Crafty game engine main class.  :ref:`crafty`
 
     :param w: The width of crafty window
@@ -61,6 +62,7 @@ class BCrafty(Base):
         self.__crafty = JSObject(JSCrafty)
         self.__crafty.init(w, h, stage)
         Base.__init__(self, self.__crafty)
+        ViewPort.__init__(self, self.__crafty)
 
     def e(self, comp='2D, DOM, Color'):
         """Entity. :class:`crafty.core.BCrafty`

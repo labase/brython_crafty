@@ -247,6 +247,24 @@ class Entity(Sprite, Draggable, Base):
         self.__elt.shift(x, y, w, h)
         return self
 
+    def flip(self, direction):
+        """Flip entity on passed direction
+
+        :param direction: Flip direction
+        :return: Self, this same entity
+        """
+        self.__elt.flip(direction)
+        return self
+
+    def unflip(self, direction):
+        """Unflip entity on passed direction (if it's flipped)
+
+        :param direction: Unflip direction
+        :return: Self, this same entity
+        """
+        self.__elt.unflip(direction)
+        return self
+
     def hit(self, component):
         """Takes an argument for a component to test collision for.  :mod:`crafty.entity`
 
