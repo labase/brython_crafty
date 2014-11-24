@@ -134,6 +134,35 @@ class Base:
         self.__crafty.text(texty)
         return self
 
+    def textColor(self, color):
+        """Change the color of the text. You can use HEX, rgb and rgba colors.
+
+        :param color: The color in name, hex, rgb or rgba
+        :return: Self, this same entity
+        """
+        self.__crafty.textColor(color)
+        return self
+
+    def textFont(self, size="10px", weight="normal", face="normal", family="Arial"):
+        """Use this method to set font property of the text entity.
+
+        :param size: Size of the font in pixels ex: "20px"
+        :param weight: Weight o font ex: "bold"
+        :param face: Type of fonte ex: "italic"
+        :param family: Font family
+        :return: Self, this same entity
+        """
+        self.__crafty.textFont(dict(size=size, weight=weight, type=face, family=family))
+        return self
+
+    def unselectable(self):
+        """This method sets the text so that it cannot be selected (highlighted) by dragging.
+
+        :return: Self, this same entity
+        """
+        self.__crafty.unselectable()
+        return self
+
     def bind(self, eventName, callback):
         """Crafty Bind. :class:`crafty.base.Base`
 

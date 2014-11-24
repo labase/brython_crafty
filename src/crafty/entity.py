@@ -89,6 +89,31 @@ class Entity(Sprite, Draggable, Base):
             self.__elt.twoway(speed, jump)
         return self
 
+    def enableControl(self):
+        """Enable the component to listen to key events.  :mod:`crafty.entity`
+
+        :returns: Self, this same entity
+        """
+        self.__elt.enableControl()
+        return self
+
+    def disableControl(self):
+        """Disable the component to listen to key events.  :mod:`crafty.entity`
+
+        :returns: Self, this same entity
+        """
+        self.__elt.disableControl()
+        return self
+
+    def speed(self, speed):
+        """Change the speed that the entity moves with.  :mod:`crafty.entity`
+
+        :param: speed: the speed of movement
+        :returns: Self, this same entity
+        """
+        self.__elt.speed(speed)
+        return self
+
     def fourway(self, speed):
         """Creates an four way entity control.  :mod:`crafty.entity`
 
